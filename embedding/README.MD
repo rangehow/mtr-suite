@@ -1,0 +1,1 @@
+因为infinity不支持qwen3，所以暂时废弃（即_embedding.py），目前使用vllm来部署。

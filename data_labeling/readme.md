@@ -1,0 +1,1 @@
+项目里包含了一个网页——web.py和templates下的静态网页，分别包含后端和前端。标注的数据会保存到启动web.py路径的scores.csv下，利用main.py可以计算这个csv文件打分与大模型打分的相关性~ 这个原始的huggingface 数据集必须是从model_choice或者analysis_of_previous_benchmark生成的带打分数据数据集，否则会因为不能读取到打分理由报错，且无法计算相关性系数！

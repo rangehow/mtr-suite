@@ -1,0 +1,36 @@
+# Core dependencies
+torch>=2.0
+transformers>=4.40
+datasets>=2.18
+numpy
+loguru
+tqdm
+rich
+
+# Embedding backends (choose one or both)
+infinity-emb[torch]
+sentence-transformers
+
+# FAISS for indexing/retrieval
+faiss-gpu  # or faiss-cpu if no GPU
+
+# Inference backends (choose one or both)
+# vllm>=0.6
+# sglang>=0.4
+# ray  # used by vllm for distributed inference
+
+# API backend (for remote sglang/vllm endpoints)
+aiohttp>=3.9
+
+# Training (optional)
+# flash-attn
+# triton
+
+# Statistics & visualization (optional)
+scipy
+pandas
+seaborn
+matplotlib
+
+# Data labeling web UI (optional)
+# gradio

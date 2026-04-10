@@ -1,0 +1,3 @@
+这个路径下有三个脚本，分别是analysis_result.sh，response.sh和hope.sh/local.sh
+其中hope.sh/local.sh负责生成nxn组的打标数据。response.sh可以只生成nx1组的任务（即确定被judge的模型）
+最后就是通过打标数据生成图表和csv的analysis_result.sh
