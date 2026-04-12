@@ -1,8 +1,26 @@
+<div align="center">
+
 # MTR-Suite
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+**一个用于评估和合成对话检索基准的框架**
 
-本仓库包含 **MTR-Suite: A Data Synthesis Pipeline, Benchmark, and Models for Conversational Retrieval**（ACL 2026 Main）的代码。
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![ACL 2026](https://img.shields.io/badge/ACL-2026%20Main-red.svg)](https://2026.aclweb.org/)
+[![Dataset](https://img.shields.io/badge/🤗%20HuggingFace-Datasets-blue.svg)](https://huggingface.co/datasets/OkayestProgrammer/mtr-qwen35-fp8-12turn)
+[![Paper](https://img.shields.io/badge/📄%20Paper-Coming%20Soon-green.svg)]()
+
+[English](readme.md) | [中文](readme_zh.md)
+
+</div>
+
+---
+
+本仓库包含 **MTR-Suite: A Framework for Evaluating and Synthesizing Conversational Retrieval Benchmarks**（ACL 2026 Main）的代码。
+
+MTR-Suite 是一个用于**审计**、**合成**和**评测**对话检索系统的统一框架，包含：
+- **MTR-Eval**：基于 LLM 的审计器，量化已有基准中的标注偏差。
+- **MTR-Pipeline**：基于贪心遍历聚类的多智能体系统，以人工标注 1/400 的成本生成高质量对话。
+- **MTR-Bench**：严格的通用领域基准，通过真实对话现象（硬主题切换、冗长回复、长上下文歧义）压力测试现代检索器。
 
 ## 文档
 
@@ -40,7 +58,7 @@ pip install -r requirements.txt
 ### 目录概览
 
 * `data_process/` — 原始数据清洗、过滤及切块
-* `embedding/` — 文档嵌入、FAISS GPU 索引、K-Means 聚类
+* `embedding/` — 文档嵌入、FAISS GPU 索引、贪心遍历聚类
 * `generate/` — 数据生成（查询、回复、对话改写）
 * `train/` — 三元组数据上的训练（anchor, positive, negatives）
 * `eval/` — 实验评测，包含嵌入-索引-评测子流程
@@ -55,7 +73,7 @@ pip install -r requirements.txt
 ## 主要生产流水线
 
 ```
-data_process/ → embedding/ → generate/ → train/ → eval/
+data_process/ → embedding/ → generate/
 ```
 
 每个子阶段的主入口是 `main.py`，启动示例在 `main.sh`，参数定义在 `arg_parser.py`。
@@ -94,24 +112,30 @@ API 后端详见 [`QUICKSTART_API.md`](QUICKSTART_API.md) 和 `generate/main_api
 
 ### 数据集
 
-* **[`MTR-DOCUMENT`](https://huggingface.co/datasets/OkayestProgrammer/MTR-DOCUMENT)**：用于检索的文档集合（1,041,047 篇维基百科段落）
-* **[`MTR-BENCH`](https://huggingface.co/datasets/OkayestProgrammer/MTR-BENCH)**：论文原始测试集
-* **[`MTR-TRAIN`](https://huggingface.co/datasets/OkayestProgrammer/MTR-train)**：论文原始训练集
-* **[`MTR-Qwen3.5-FP8-12Turn`](https://huggingface.co/datasets/OkayestProgrammer/mtr-qwen35-fp8-12turn)**：12 轮对话 + 随机 hard topic switch，由 Qwen3.5-FP8 生成
+| 资源 | 说明 |
+|---|---|
+| [**MTR-Qwen3.5-FP8-12Turn**](https://huggingface.co/datasets/OkayestProgrammer/mtr-qwen35-fp8-12turn) | 🌟 **推荐使用。** 最新最高质量版本。12 轮对话 + 随机硬主题切换，由 Qwen3.5-FP8 (397B MoE) 生成。**使用 `train` split 训练，`test` split 作为 MTR-Bench 评测。** |
+| [**MTR-DOCUMENT**](https://huggingface.co/datasets/OkayestProgrammer/MTR-DOCUMENT) | 用于检索的文档集合（1,041,047 篇维基百科段落，来自 2025-01 dump）。 |
 
-### 模型
+> **关于论文版本与开源版本的说明：** 论文中报告的结果使用的是早期模型组合生成的 8 轮版本。我们后续升级了流水线，发布了更高质量的 12 轮版本（由 Qwen3.5-FP8 生成）作为推荐基准。用户可自行从 `train` 集划分 train/dev；建议使用 `test` split 进行评测。
 
-* **[`MTR-MODERNBERT-BASE`](https://huggingface.co/OkayestProgrammer/mtr-modernbert-base)**
-* **[`ChatQA-MODERNBERT-BASE`](https://huggingface.co/OkayestProgrammer/chatqa-modernbert-base)**
+### 原始数据集（论文中使用）
+
+这些是论文中引用的原始数据集。建议新工作使用上述 Qwen3.5-FP8-12Turn 版本。
+
+| 资源 | 说明 |
+|---|---|
+| [**MTR-BENCH**](https://huggingface.co/datasets/OkayestProgrammer/MTR-BENCH) | 论文原始测试集（8 轮）。 |
+| [**MTR-TRAIN**](https://huggingface.co/datasets/OkayestProgrammer/MTR-train) | 论文原始训练集（8 轮）。 |
 
 ## 引用
 
 如果您觉得本工作有帮助，请引用我们的论文：
 
 ```bibtex
-@inproceedings{mtr-suite-2026,
-    title={MTR-Suite: A Data Synthesis Pipeline, Benchmark, and Models for Conversational Retrieval},
-    author={<authors>},
+@inproceedings{ruan-etal-2026-mtr-suite,
+    title={{MTR}-Suite: A Framework for Evaluating and Synthesizing Conversational Retrieval Benchmarks},
+    author={Junhao Ruan and Abudukeyumu Abudula and Bei Li and Yongjing Yin and Xinyu Liu and Kechen Jiao and Xin Chen and Jingang Wang and Xunliang Cai and Tong Xiao and Jingbo Zhu},
     booktitle={Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (ACL 2026)},
     year={2026}
 }
